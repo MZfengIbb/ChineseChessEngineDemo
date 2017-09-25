@@ -67,20 +67,26 @@ void GameScene::onTouchEnded(Touch * touch, Event * event)
 		from_idx = idx;
 	}
 	else {
-		to_idx = idx;
-		mv = move(from_idx, to_idx);
-		if (obj_engine->_board.legal_move(mv)) {
-			if (doMove()) {
-				//AI engine search for next move
-				is_searching = true;
-				auto searchCallBack = CallFunc::create(CC_CALLBACK_0(GameScene::aiEngineSearchMain, this));
-				this->runAction(Sequence::create(DelayTime::create(MOVE_ACTION_DURATION + 0.1), searchCallBack, nullptr));
-				is_searching = false;
-			}
+        try{
+            to_idx = idx;
+            mv = move(from_idx, to_idx);
+            if (obj_engine->_board.legal_move(mv)) {
+                if (doMove()) {
+                    //AI engine search for next move
+                    is_searching = true;
+                    auto searchCallBack = CallFunc::create(CC_CALLBACK_0(GameScene::aiEngineSearchMain, this));
+                    this->runAction(Sequence::create(DelayTime::create(MOVE_ACTION_DURATION + 0.1), searchCallBack, nullptr));
+                    is_searching = false;
+                }
+            }
+            else {
+                ((CocosDenshion::SimpleAudioEngine *)audio)->playEffect("sound/wrong.wav");
+
+            }
 		}
-		else {
-			((CocosDenshion::SimpleAudioEngine *)audio)->playEffect("sound/wrong.wav");
-		}
+        catch(...){
+
+        }
 	}
 }
 
